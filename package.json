@@ -1,0 +1,10 @@
+{
+  "name": "scottmagnacca-corporate",
+  "version": "1.0.0",
+  "description": "Scott Magnacca Corporate Site Test Deploy",
+  "private": true,
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "@sendgrid/mail": "^8.1.3"
+  }
+}
