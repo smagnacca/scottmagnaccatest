@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3Cs Comparative Analysis Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #12192c;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .charts-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+        .chart-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .chart-canvas-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .chart-label {
+            position: absolute;
+            color: #f5a623;
+            font-weight: bold;
+            font-size: 24px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        .label-above {
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        .label-right {
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+        }
+        .label-bottom {
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        h1 {
+            color: #f5a623;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        @keyframes statGlowPulse {
+            0%   { text-shadow: 0 0 0px rgba(245, 166, 35, 0); }
+            40%  { text-shadow: 0 0 28px rgba(245, 166, 35, 1), 0 0 56px rgba(245, 166, 35, 0.6); }
+            100% { text-shadow: 0 0 10px rgba(245, 166, 35, 0.3); }
+        }
+        .stat-card {
+            position: relative;
+            text-align: center;
+            opacity: 0;
+        }
+        .stat-card.visible {
+            opacity: 1;
+        }
+        .stat-number {
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: #f5a623;
+            margin: 0;
+            line-height: 1;
+        }
+        .stat-number.glow {
+            animation: statGlowPulse 0.8s cubic-bezier(0.46, 1, 0, 1) forwards;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Comparative Analysis</h1>
+        <p class="subtitle">Performance gains with Curiosity, Lifelong Learning, and Agility & Adaptability</p>
+
+        <div class="charts-wrapper">
+            <!-- Bar Chart -->
+            <div class="chart-card">
+                <div class="chart-label label-above">
+                    <div class="stat-card" data-target="38">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Performance</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-bottom: 15px; color: rgba(255, 255, 255, 0.7); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Productivity & Engagement</div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Line/Area Chart -->
+            <div class="chart-card">
+                <div class="chart-label label-above">
+                    <div class="stat-card" data-target="215">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Growth</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-bottom: 15px; color: rgba(255, 255, 255, 0.7); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Skills Acquisition Over Time</div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Radar Chart -->
+            <div class="chart-card">
+                <div class="chart-label label-above">
+                    <div class="stat-card" data-target="64">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Capability</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-bottom: 15px; color: rgba(255, 255, 255, 0.7); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Agility & Adaptability</div>
+                <div class="chart-canvas-wrapper" style="position: relative;">
+                    <canvas id="radarChart"></canvas>
+                    <!-- Orange expansion arrows SVG overlay -->
+                    <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;" viewBox="0 0 300 300">
+                        <!-- Right arrow -->
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#ff6b35" />
+                            </marker>
+                        </defs>
+                        <!-- Top-right arrow -->
+                        <line x1="200" y1="100" x2="240" y2="60" stroke="#ff6b35" stroke-width="2.5" marker-end="url(#arrowhead)" opacity="0.8" />
+                        <!-- Right arrow -->
+                        <line x1="220" y1="150" x2="260" y2="150" stroke="#ff6b35" stroke-width="2.5" marker-end="url(#arrowhead)" opacity="0.8" />
+                        <!-- Bottom-right arrow -->
+                        <line x1="200" y1="200" x2="240" y2="240" stroke="#ff6b35" stroke-width="2.5" marker-end="url(#arrowhead)" opacity="0.8" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                <div>
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 13px; line-height: 1.6;">Based on the Gale et al. (2024) model</div>
+                </div>
+                <div>
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 13px; line-height: 1.6;">Based on the Mateo-Berganza Diaz et al. (2022) model</div>
+                </div>
+                <div>
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 13px; line-height: 1.6;">Based on the Peng et al. (2023) model</div>
+                </div>
+            </div>
+            <div style="color: rgba(255, 255, 255, 0.6); font-size: 12px; line-height: 1.7; font-style: italic;">
+                The exact numerical statistics displayed in charts (+38%, +215%, and +64%) were synthesized to visually represent the trends found in peer-reviewed research and are provided for illustrative purposes.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chartDefaults = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        font: { size: 12 }
+                    }
+                }
+            },
+            scales: {
+                r: {
+                    ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                },
+                y: {
+                    ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                }
+            }
+        };
+
+        let barChart, lineChart, radarChart;
+        const CHART_ANIMATION_DURATION = 2500;
+        const CHART_STAGGER_DELAY = 300;
+
+        const barChartData = {
+            labels: ['Avg Emp 1', 'Avg Emp 2', 'Avg Emp 3', 'Avg Emp 4', 'Curious 1', 'Curious 2'],
+            emptyData: [[0, 0], [0, 0]],
+            fullData: [[65, 68, 62, 70, 58, 65], [92, 94, 89, 96, 98, 95]]
+        };
+
+        const lineChartData = {
+            labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+            emptyData: [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+            fullData: [[20, 30, 40, 50, 60], [45, 75, 110, 150, 190]]
+        };
+
+        const radarChartData = {
+            labels: ['Speed to New Tech', 'Effectiveness in Pivoting', 'Resilience to Shifts', 'Proactive Innovation', 'Speed to New Tech'],
+            emptyData: [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+            fullData: [[60, 55, 65, 50, 60], [95, 88, 98, 92, 95]]
+        };
+
+        function createCharts() {
+            // Bar Chart - starts with empty data
+            barChart = new Chart(document.getElementById('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: barChartData.labels,
+                    datasets: [
+                        {
+                            label: 'Average Employee',
+                            data: barChartData.emptyData[0],
+                            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                            borderColor: 'rgba(255, 255, 255, 0.3)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'High Curiosity',
+                            data: barChartData.emptyData[1],
+                            backgroundColor: '#00d4ff',
+                            borderColor: '#00d4ff',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    animation: { duration: CHART_ANIMATION_DURATION, easing: 'easeOutCubic' },
+                    scales: { x: { ticks: { display: false } } }
+                }
+            });
+
+            // Line/Area Chart - starts with empty data
+            lineChart = new Chart(document.getElementById('lineChart'), {
+                type: 'line',
+                data: {
+                    labels: lineChartData.labels,
+                    datasets: [
+                        {
+                            label: 'Average Skills',
+                            data: lineChartData.emptyData[0],
+                            borderColor: 'rgba(255, 255, 255, 0.4)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(255, 255, 255, 0.3)',
+                            pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Agile & Adaptable',
+                            data: lineChartData.emptyData[1],
+                            borderColor: '#00d4ff',
+                            backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointBackgroundColor: '#00d4ff',
+                            pointBorderColor: '#00d4ff',
+                            pointRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    animation: { duration: CHART_ANIMATION_DURATION, easing: 'easeOutCubic' },
+                    scales: {
+                        ...chartDefaults.scales,
+                        y: { ...chartDefaults.scales.y, beginAtZero: true, max: 200 }
+                    }
+                }
+            });
+
+            // Radar Chart - starts with empty data
+            radarChart = new Chart(document.getElementById('radarChart'), {
+                type: 'radar',
+                data: {
+                    labels: radarChartData.labels,
+                    datasets: [
+                        {
+                            label: 'Average Employee',
+                            data: radarChartData.emptyData[0],
+                            borderColor: 'rgba(255, 255, 255, 0.3)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                            pointBackgroundColor: 'rgba(255, 255, 255, 0.3)',
+                            pointBorderColor: 'rgba(255, 255, 255, 0.5)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Agile & Adaptable',
+                            data: radarChartData.emptyData[1],
+                            borderColor: '#00d4ff',
+                            backgroundColor: 'rgba(0, 212, 255, 0.15)',
+                            pointBackgroundColor: '#00d4ff',
+                            pointBorderColor: '#00d4ff',
+                            pointRadius: 5,
+                            borderWidth: 2.5
+                        }
+                    ]
+                },
+                options: {
+                    ...chartDefaults,
+                    animation: { duration: CHART_ANIMATION_DURATION, easing: 'easeOutCubic' },
+                    scales: {
+                        r: {
+                            ...chartDefaults.scales.r,
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { display: false, stepSize: 20 },
+                            pointLabels: { color: '#FFFFFF', font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        createCharts();
+
+        // Stat count-up animations
+        const COUNT_DURATION = 800;
+        const statCards = document.querySelectorAll('.stat-card');
+        let chartsAnimationTriggered = false;
+
+        function countUp(card, onDone) {
+            const target = parseInt(card.getAttribute('data-target') || '0', 10);
+            const numberEl = card.querySelector('.stat-number');
+            let startTime = null;
+            card.classList.add('visible');
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / COUNT_DURATION, 1);
+                const eased = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+                if (numberEl) numberEl.textContent = Math.round(eased * target) + '%';
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    if (numberEl) {
+                        numberEl.textContent = target + '%';
+                        numberEl.classList.add('glow');
+                    }
+                    if (onDone) onDone();
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function runSequential(index) {
+            if (index >= statCards.length) return;
+            countUp(statCards[index], function() {
+                runSequential(index + 1);
+            });
+        }
+
+        // IntersectionObserver to trigger animations on scroll
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting && !chartsAnimationTriggered) {
+                    chartsAnimationTriggered = true;
+
+                    // Populate bar chart data to trigger animation
+                    setTimeout(() => {
+                        if (barChart) {
+                            barChart.data.datasets[0].data = barChartData.fullData[0];
+                            barChart.data.datasets[1].data = barChartData.fullData[1];
+                            barChart.update('default');
+                        }
+                    }, 0);
+
+                    // Populate line chart data with stagger
+                    setTimeout(() => {
+                        if (lineChart) {
+                            lineChart.data.datasets[0].data = lineChartData.fullData[0];
+                            lineChart.data.datasets[1].data = lineChartData.fullData[1];
+                            lineChart.update('default');
+                        }
+                    }, CHART_ANIMATION_DURATION + CHART_STAGGER_DELAY);
+
+                    // Populate radar chart data with more stagger
+                    setTimeout(() => {
+                        if (radarChart) {
+                            radarChart.data.datasets[0].data = radarChartData.fullData[0];
+                            radarChart.data.datasets[1].data = radarChartData.fullData[1];
+                            radarChart.update('default');
+                        }
+                    }, 2 * (CHART_ANIMATION_DURATION + CHART_STAGGER_DELAY));
+
+                    // Trigger stat count-ups after all charts have animated
+                    setTimeout(() => {
+                        runSequential(0);
+                    }, 3 * (CHART_ANIMATION_DURATION + CHART_STAGGER_DELAY));
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.4 });
+
+        const chartsWrapper = document.querySelector('.charts-wrapper');
+        if (chartsWrapper) {
+            observer.observe(chartsWrapper);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Babson Strip — Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0a1628;
+      --gold: #f5a623;
+      --white: #ffffff;
+      --off-white: #F5F5F5;
+      --text-dark: #111827;
+      --text-mid: #374151;
+      --gray: #6b7280;
+    }
+    body { font-family: 'Inter', sans-serif; background: #e5e5e5; padding: 60px 20px; }
+
+    /* ── Simulated About section bottom (context) ── */
+    .fake-about-end {
+      max-width: 900px;
+      margin: 0 auto 0;
+      background: var(--white);
+      padding: 32px 40px;
+      border-radius: 12px 12px 0 0;
+      color: var(--gray);
+      font-size: 0.85rem;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* ── THE NEW STRIP ── */
+    @keyframes babson-glow-pulse {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(0,208,132,0.25), 0 0 14px rgba(0,208,132,0.18); }
+      50%       { box-shadow: 0 0 0 4px rgba(0,208,132,0.40), 0 0 28px rgba(0,208,132,0.32); }
+    }
+    #babson-strip {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 2px solid var(--gold);
+      border-radius: 10px;
+      padding: 28px 40px;
+      animation: babson-glow-pulse 3s ease-in-out infinite;
+    }
+    .babson-strip-outer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    .babson-strip-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .babson-mag-thumb {
+      flex: 0 0 auto;
+      width: 72px;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      display: block;
+    }
+    .babson-article-thumb {
+      flex: 0 0 auto;
+      width: 110px;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      display: block;
+    }
+    .babson-strip-text {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .babson-strip-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .babson-strip-quote {
+      font-size: 0.86rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+      font-style: italic;
+    }
+    .babson-strip-quote strong {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .babson-strip-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .babson-pill {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--gray);
+      border: 1px solid #d1d5db;
+      border-radius: 99px;
+      padding: 4px 12px;
+      white-space: nowrap;
+    }
+
+    /* ── Simulated FAQ top (context) ── */
+    .fake-faq-start {
+      max-width: 900px;
+      margin: 0 auto 0;
+      background: var(--off-white);
+      padding: 32px 40px;
+      border-radius: 0 0 12px 12px;
+      color: var(--gray);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .babson-strip-pills { display: none; }
+      #babson-strip { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="fake-about-end">↑ Bottom of "About Scott Magnacca" section (bio text, badges, Amazon button)</div>
+
+  <!-- THE STRIP -->
+  <div class="babson-strip-outer">
+  <div id="babson-strip">
+    <div class="babson-strip-inner">
+      <img src="babson-magazine-cover.jpg" alt="Babson Magazine Spring 2026" class="babson-mag-thumb" />
+      <div class="babson-strip-text">
+        <p class="babson-strip-eyebrow">Featured in Babson Magazine — Spring 2026</p>
+        <p class="babson-strip-quote">"<em>Storyselling in the Age of AI</em> is focused on <strong>helping entrepreneurs and those in sales use generative AI to boost profits while maintaining the human touch.</strong> Magnacca, also an adjunct faculty member at Babson, also incorporated parts of his course, AI Enabled Selling for Client Facing Financial Professionals, into the book."</p>
+        <div class="babson-strip-pills">
+          <span class="babson-pill">Babson College Faculty</span>
+          <span class="babson-pill">MBA '92</span>
+        </div>
+      </div>
+      <img src="babson-scott-feature.jpg" alt="Scott Magnacca featured in Babson Magazine" class="babson-article-thumb" />
+    </div>
+  </div>
+  </div>
+
+  <div class="fake-faq-start">↓ "Frequently Asked Questions" section begins here</div>
+
+</body>
+</html>

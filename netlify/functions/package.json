@@ -1,0 +1,10 @@
+{
+  "name": "contact-form-function",
+  "version": "1.0.0",
+  "description": "Netlify function for discovery call form submissions",
+  "main": "contact-form.js",
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "@sendgrid/mail": "^8.1.3"
+  }
+}

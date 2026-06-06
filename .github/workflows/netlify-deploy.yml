@@ -1,0 +1,29 @@
+name: Deploy to Netlify on push to main
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli@latest
+
+      - name: Install function dependencies
+        run: |
+          if [ -f netlify/functions/package.json ]; then
+            cd netlify/functions && npm install --omit=dev
+          fi
+
+      - name: Deploy to Netlify (production)
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          netlify deploy --prod --dir=. \
+            --site=5374582f-f39a-44c6-9bb6-dd0f04b80bb0 \
+            --message="GH Action deploy ${COMMIT_SHA:0:7}"
