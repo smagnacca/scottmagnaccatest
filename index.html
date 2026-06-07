@@ -1271,6 +1271,23 @@
       .footer-inner { flex-direction: column; align-items: flex-start; }
       .form-wrap { padding: 28px 20px; }
       .section-title { font-size: 1.75rem; }
+      .value-prop-sentence {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        text-align: center;
+      }
+      .cta-link {
+        display: block;
+        width: 100%;
+        max-width: 280px;
+        padding: 12px 20px;
+        border-bottom: none;
+        border: 1.5px solid var(--gold);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(245,166,35,0.15);
+      }
     }
 
     /* ─── SECTION LABEL ─── */
@@ -3015,7 +3032,7 @@
 <section id="framework">
   <div class="container">
     <div class="section-label reveal">The Methodology</div>
-    <h2 class="section-title reveal">The 3Cs Framework: How Elite Teams Outsell the Market</h2>
+    <h2 class="section-title reveal">The CLA Framework: How Elite Teams Outsell the Market</h2>
     <p class="section-subtitle reveal">Three principles that transform how teams think, communicate, and adapt — with AI as the accelerator.</p>
     <div class="framework-intro reveal" style="max-width: 720px; margin: 32px auto 48px; text-align: center; font-size: 1.05rem; line-height: 1.75; color: rgba(255,255,255,0.8);">
       <p><span id="methodology-tw-wrap" style="font-weight:700; transition: color 0.6s ease;"><span id="methodology-tw-out"></span><span id="methodology-cursor" style="animation: cursorBlink 0.9s step-end infinite;">|</span></span> You craft a narrative that resonates with your audience's hopes, fears, and ambitions. Then you take action, telling that story so compellingly that others believe, invest, and follow. For professionals, this isn't optional—it's the engine that turns vision into momentum.</p>
@@ -3058,7 +3075,7 @@
           <span class="orbit-dot pink" style="--orbit-speed:5s;"></span>
           <span class="orbit-dot yellow sm" style="--orbit-speed:8s; animation-delay:-3s;"></span>
         </div>
-        <div class="framework-card-label">The 3Cs — Principle 1</div>
+        <div class="framework-card-label">The CLA — Principle 1</div>
         <div class="framework-card-title">Curiosity</div>
         <p class="framework-card-desc">Ask better questions. AI helps you find what to be curious about before every call — giving your team the context to open conversations that matter and create genuine buyer interest.</p>
       </div>
@@ -3080,7 +3097,7 @@
           <span class="orbit-dot yellow" style="--orbit-speed:6s;"></span>
           <span class="orbit-dot blue-dot sm" style="--orbit-speed:10s; animation-delay:-4s;"></span>
         </div>
-        <div class="framework-card-label">The 3Cs — Principle 2</div>
+        <div class="framework-card-label">The CLA — Principle 2</div>
         <div class="framework-card-title">Lifelong Learning</div>
         <p class="framework-card-desc">Markets move fast. The learn &rarr; apply &rarr; teach cycle keeps teams ahead of every shift. Teams that embed learning into daily practice outperform those that rely on annual training events.</p>
       </div>
@@ -3101,7 +3118,7 @@
           <span class="orbit-dot teal" style="--orbit-speed:4.5s;"></span>
           <span class="orbit-dot pink sm" style="--orbit-speed:9s; animation-delay:-2s;"></span>
         </div>
-        <div class="framework-card-label">The 3Cs — Principle 3</div>
+        <div class="framework-card-label">The CLA — Principle 3</div>
         <div class="framework-card-title">Agility &amp; Adaptability</div>
         <p class="framework-card-desc">Connection and persuasion is a conversation, not a script. Adapt to every person, company, and moment. AI gives your team real-time signals — but only people with narrative intelligence know how to use them.</p>
       </div>
@@ -3616,7 +3633,7 @@
     <div style="background: rgba(255,255,255,0.03); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; text-align: center;">
       <div style="font-size: 0.8rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Next Live Session</div>
       <div style="font-size: 2.2rem; font-weight: 800; color: var(--white); line-height: 1.2; margin-bottom: 8px;">Wednesday</div>
-      <div style="font-size: 1.8rem; font-weight: 700; color: var(--blue); margin-bottom: 16px;">June 17, 2026</div>
+      <div style="font-size: 1.8rem; font-weight: 700; color: var(--blue); margin-bottom: 16px;">October 14, 2026</div>
       <div style="font-size: 1.1rem; color: rgba(255,255,255,0.7); margin-bottom: 24px;">7:00 PM Eastern (Zoom)</div>
       <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; font-size: 0.9rem; color: rgba(255,255,255,0.5); font-style: italic;">
         Limited to 55 virtual seats for interactive Q&A.
@@ -3689,7 +3706,7 @@
       </svg>
     </div>
     <div class="ty-title" style="color:var(--white);">You're all set.</div>
-    <p class="ty-text">Scott received your inquiry and will respond within 24 hours. In the meantime, register for the free 15-Minute Sales Sprint on June 17.</p>
+    <p class="ty-text">Scott received your inquiry and will respond within 24 hours. In the meantime, register for the free 15-Minute Sales Sprint on October 14.</p>
     <a href="https://15-minute-sales-sprint.netlify.app" class="btn-primary" style="margin-top:24px;display:inline-block;">Register for the Free Sprint &rarr;</a>
   </div>
 </section>
@@ -4677,21 +4694,21 @@ function submitWagePremium(event) {
   submitBtn.textContent = 'Unlocking...';
 
   const formData = new URLSearchParams();
+  formData.append('form-name', 'wage-premium-leads');
   formData.append('name', name);
-  formData.append('email', email);
   formData.append('company', company);
-  formData.append('teamSize', wageCalculatorState.salary);
-  formData.append('calculatedRoi', wageCalculatorState.premium);
-  formData.append('originatingWebsite', window.location.hostname || 'scottmagnaccatest.netlify.app');
+  formData.append('email', email);
+  formData.append('annual_salary', wageCalculatorState.salary);
+  formData.append('calculated_premium', wageCalculatorState.premium);
+  formData.append('timestamp', new Date().toISOString());
 
-  fetch('/.netlify/functions/calculator-lead', { 
+  fetch('/', { 
     method: 'POST', 
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
     body: formData.toString() 
   })
-  .then(res => res.json())
-  .then(data => {
-    console.log('Calculator lead submitted:', data);
+  .then(() => {
+    console.log('Calculator lead submitted via Netlify Forms');
   })
   .catch(e => console.error('Error submitting calculator lead:', e));
 
@@ -4796,6 +4813,8 @@ function fireConfettiBurstWage(cx, cy) {
 
 <!-- Hidden Netlify form for wage premium capture -->
 <form name="wage-premium-leads" method="POST" netlify hidden>
+  <input type="text" name="name" />
+  <input type="text" name="company" />
   <input type="email" name="email" />
   <input type="number" name="annual_salary" />
   <input type="number" name="calculated_premium" />
@@ -4848,7 +4867,7 @@ function fireConfettiBurstWage(cx, cy) {
   };
 
   const radarChartData = {
-    labels: ['Speed to New Tech', 'Effectiveness in Pivoting', 'Resilience to Shifts', 'Proactive Innovation', 'Speed to New Tech'],
+    labels: ['Speed', 'Effectiveness', 'Resilience', 'Innovation', 'Adaptability'],
     emptyData: [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
     fullData: [[60, 55, 65, 50, 60], [95, 88, 98, 92, 95]]
   };
