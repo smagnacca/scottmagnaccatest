@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scott Magnacca | Sales Team Capacity & ROI Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --navy: #0a1628;
+      --navy-light: #0f1f3d;
+      --navy-dark: #060e1a;
+      --gold: #f5a623;
+      --gold-light: #fbbf4a;
+      --blue: #007AFF;
+      --white: #ffffff;
+      --babson-green: #00D084;
+      --gray-text: rgba(255, 255, 255, 0.7);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-light) 100%);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      width: 100%;
+    }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .logo-brand {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 950;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      letter-spacing: -0.025em;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .report-meta {
+      font-size: 1rem;
+      color: var(--gray-text);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* DASHBOARD GRID */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 800px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* CARDS */
+    .card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 32px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(245, 166, 35, 0.2);
+    }
+
+    /* METRICS COLUMN */
+    .metrics-col {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .metric-card {
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gold);
+    }
+
+    .metric-card.success-border::before {
+      background: var(--babson-green);
+    }
+
+    .metric-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gray-text);
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+
+    .metric-value.highlight-green {
+      color: var(--babson-green);
+      text-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
+    }
+
+    .metric-value.highlight-gold {
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(245, 166, 35, 0.3);
+    }
+
+    .metric-desc {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* CHART CARD */
+    .chart-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chart-header {
+      margin-bottom: 24px;
+    }
+
+    .chart-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .chart-subtitle {
+      font-size: 0.9rem;
+      color: var(--gray-text);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+
+    /* STRATEGY RECOMMENDATIONS */
+    .strategy-section {
+      margin-bottom: 40px;
+    }
+
+    .strategy-card h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--gold);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+
+    .strategy-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .strategy-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .strategy-bullet {
+      background: rgba(0, 208, 132, 0.15);
+      color: var(--babson-green);
+      font-size: 1rem;
+      font-weight: 800;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .strategy-text h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .strategy-text p {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    /* CTA / FOOTER */
+    .cta-container {
+      text-align: center;
+      margin-top: 20px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .btn-action {
+      display: inline-block;
+      padding: 18px 40px;
+      background: var(--blue);
+      color: var(--white);
+      border-radius: 9999px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+      box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3);
+    }
+
+    .btn-action:hover {
+      background: #0066dd;
+      transform: scale(1.04) translateY(-1px);
+      box-shadow: 0 15px 40px rgba(0, 122, 255, 0.5);
+    }
+
+    .footer-note {
+      margin-top: 32px;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.35);
+      text-align: center;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo-brand">Scott Magnacca</div>
+      <h1>Your Sales Team <span>ROI Report</span></h1>
+      <p class="report-meta" id="reportMetaText">Prepared dynamically for your team analysis.</p>
+    </header>
+
+    <div class="dashboard-grid">
+      <!-- Left Column: Key Stats -->
+      <div class="metrics-col">
+        <div class="card metric-card success-border animate-fade-in" style="animation-delay: 0.1s;">
+          <div class="metric-label">Reclaimed Team Hours</div>
+          <div class="metric-value highlight-green" id="reclaimedHoursVal">0</div>
+          <div class="metric-desc">Hours of administrative prospecting work saved per year</div>
+        </div>
+
+        <div class="card metric-card animate-fade-in" style="animation-delay: 0.2s;">
+          <div class="metric-label">Estimated Capacity Value</div>
+          <div class="metric-value highlight-gold" id="reclaimedValueVal">$0</div>
+          <div class="metric-desc">Annual sales capacity value re-injected into selling activities</div>
+        </div>
+      </div>
+
+      <!-- Right Column: Chart -->
+      <div class="card chart-card animate-fade-in" style="animation-delay: 0.3s;">
+        <div class="chart-header">
+          <h3 class="chart-title">Weekly Sales Activities Allocation</h3>
+          <p class="chart-subtitle">Comparing admin vs selling tasks per rep</p>
+        </div>
+        <div class="chart-container">
+          <canvas id="capacityChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="strategy-section animate-fade-in" style="animation-delay: 0.4s;">
+      <div class="card strategy-card">
+        <h3>Strategic Action Plan for Your <span id="teamSizeText"></span> Reps</h3>
+        <ul class="strategy-list">
+          <li class="strategy-item">
+            <div class="strategy-bullet">1</div>
+            <div class="strategy-text">
+              <h4>Establish a Compliance-Safe Sandbox</h4>
+              <p>Train your team to use private AI endpoints that protect proprietary customer data. Shift research and prep work from 5 hours to under 30 minutes per rep per week, eliminating off-channel risk.</p>
+            </div>
+          </li>
+          <li class="strategy-item">
+            <div class="strategy-bullet">2</div>
+            <div class="strategy-text">
+              <h4>Implement Narrative Personalization</h4>
+              <p>Ditch generic AI spam. Use AI to surface authentic client pain points, then overlay Scott's 3Cs Storyselling framework to write hyper-focused outreach emails that average a 3x higher booking rate.</p>
+            </div>
+          </li>
+          <li class="strategy-item">
+            <div class="strategy-bullet">3</div>
+            <div class="strategy-text">
+              <h4>Automate Meeting Prep Workflows</h4>
+              <p>Integrate structured pre-call prompts that automatically analyze prospect LinkedIn activity and company reports, delivering a complete dossier to your reps 5 minutes before every meeting.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="cta-container">
+      <a href="index.html#book" class="btn-action">Schedule a Discovery Call with Scott</a>
+      <p class="footer-note">&copy; 2026 Scott Magnacca. All rights reserved. Calculations are estimates based on standard sales team efficiency models.</p>
+    </div>
+  </div>
+
+  <script>
+    // Extract query parameters
+    const params = new URLSearchParams(window.location.search);
+    const reps = parseInt(params.get('reps')) || 10;
+    const email = params.get('email') || '';
+
+    // Calculate metrics
+    const hoursPerWeekPerRep = 5;
+    const workingWeeks = 48;
+    const hourlyRate = 50;
+
+    const totalHoursReclaimed = reps * hoursPerWeekPerRep * workingWeeks;
+    const capacityValue = reps * 13000; // Aligned with the $13K team multiplier on the main page!
+
+    // Populate DOM
+    document.getElementById('teamSizeText').textContent = reps;
+    document.getElementById('reportMetaText').textContent = `Custom ROI Analysis for a team of ${reps} reps${email ? ' (' + email + ')' : ''}.`;
+    
+    // Count up animation
+    function animateValue(id, start, end, duration, prefix = '', suffix = '') {
+      const obj = document.getElementById(id);
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const val = Math.floor(progress * (end - start) + start);
+        obj.textContent = prefix + val.toLocaleString() + suffix;
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    animateValue('reclaimedHoursVal', 0, totalHoursReclaimed, 1500, '', ' hrs');
+    animateValue('reclaimedValueVal', 0, capacityValue, 1500, '$', '');
+
+    // Setup Chart
+    const ctx = document.getElementById('capacityChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Before AI Playbook', 'With AI Playbook'],
+        datasets: [
+          {
+            label: 'Prospecting Admin (hrs/week)',
+            data: [hoursPerWeekPerRep * reps, 0.5 * reps],
+            backgroundColor: 'rgba(245, 166, 35, 0.8)',
+            borderColor: 'var(--gold)',
+            borderWidth: 1.5,
+            borderRadius: 8
+          },
+          {
+            label: 'Active Selling Time (hrs/week)',
+            data: [15 * reps, (15 + hoursPerWeekPerRep - 0.5) * reps],
+            backgroundColor: 'rgba(0, 208, 132, 0.8)',
+            borderColor: 'var(--babson-green)',
+            borderWidth: 1.5,
+            borderRadius: 8
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: 'rgba(255, 255, 255, 0.7)',
+              font: { size: 11, weight: 'bold' }
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            ticks: { color: 'rgba(255, 255, 255, 0.8)', font: { size: 12, weight: 'bold' } },
+            grid: { display: false }
+          },
+          y: {
+            stacked: true,
+            ticks: { color: 'rgba(255, 255, 255, 0.7)', font: { size: 10 } },
+            grid: { color: 'rgba(255, 255, 255, 0.08)' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

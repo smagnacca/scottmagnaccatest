@@ -2160,7 +2160,7 @@
       animation: checkmarkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
     .checkmark svg {
-      stroke: var(--gold);
+      stroke: var(--babson-green);
       stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -2278,21 +2278,39 @@
       margin-top: 32px;
     }
     .cta-link {
-      color: var(--white);
-      font-weight: 600;
-      border-bottom: 2px solid var(--gold);
-      transition: color 0.3s ease, text-shadow 0.3s ease;
+      color: #fff;
+      font-weight: 700;
+      border-bottom: 2px dashed var(--gold);
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(245,166,35,0.08);
+      transition: all 0.3s ease;
+      display: inline-block;
+      position: relative;
+      animation: ctaLinkPulse 2s infinite ease-in-out;
+      text-decoration: none;
     }
     .cta-link:hover {
-      color: var(--gold);
-      text-shadow: 0 0 8px rgba(245,166,35,0.5);
+      color: var(--navy) !important;
+      background: var(--gold) !important;
+      border-bottom-color: transparent;
+      box-shadow: 0 0 18px var(--gold);
+      transform: scale(1.05);
     }
-    .cta-link.pulse {
-      animation: ctaPulse 1.5s ease-in-out infinite;
+    @keyframes ctaLinkPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(245,166,35,0.4);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 12px 6px rgba(245,166,35,0.7);
+        transform: scale(1.04);
+        background: rgba(245,166,35,0.18);
+      }
     }
-    @keyframes ctaPulse {
-      0%, 100% { text-shadow: 0 0 0 rgba(245,166,35,0); }
-      50% { text-shadow: 0 0 8px rgba(245,166,35,0.6); }
+    @keyframes btnReportGlow {
+      0%, 100% { box-shadow: 0 0 0px rgba(0, 208, 132, 0); }
+      50% { box-shadow: 0 0 22px rgba(0, 208, 132, 0.55), 0 0 8px rgba(0, 208, 132, 0.3); }
     }
 
     /* ─── ENHANCED MULTIPLIER WITH PULSE ─── */
@@ -2779,8 +2797,8 @@
                 <span class="checkmark"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M2 10 L8 16 L18 4"/></svg></span>
                 <span class="requirement-text">Integrate AI directly into current sales plays</span>
               </div>
-              <div class="checkmark-item" style="display: flex; align-items: center; gap: 8px;">
-                <span class="checkmark" style="color: var(--babson-green);"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M2 10 L8 16 L18 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div class="requirement-item">
+                <span class="checkmark"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M2 10 L8 16 L18 4"/></svg></span>
                 <span class="requirement-text">Book qualified meetings on next week's calls</span>
               </div>
             </div>
@@ -3274,6 +3292,9 @@
             <span class="currency">$</span><span class="amount" id="premiumAmount">0</span><span class="suffix">/year</span>
           </div>
           <p class="premium-desc">This represents the estimated economic value of reclaimed prospecting hours and accelerated pipeline velocity for your team.</p>
+          <div style="margin: 24px 0 32px; text-align: center;">
+            <a id="interactiveReportBtn" href="#" target="_blank" class="btn-primary" style="background: var(--babson-green); color: var(--navy) !important; border: none; font-weight: 800; font-size: 1.15rem; box-shadow: 0 10px 25px rgba(0, 208, 132, 0.3); animation: btnReportGlow 2s ease-in-out infinite; padding: 16px 36px; text-decoration: none;">📊 View Your Interactive ROI Report →</a>
+          </div>
           <div class="gift-block">
             <p class="gift-thanks">As a thank-you for sharing your email, we'd like to send you a free gift — the first chapter of Scott's book, <em>Storyselling in the Age of AI</em>.</p>
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
@@ -4656,6 +4677,12 @@ function unlockSequenceWage() {
     document.getElementById('lockStage').style.display = 'none';
     document.getElementById('resultsStage').style.display = 'block';
     document.getElementById('premiumAmount').textContent = wageCalculatorState.premium.toLocaleString();
+    
+    const reportUrl = `report.html?reps=${wageCalculatorState.salary}&email=${encodeURIComponent(wageCalculatorState.email)}`;
+    document.getElementById('interactiveReportBtn').href = reportUrl;
+    
+    // Auto-open interactive report in new window
+    window.open(reportUrl, '_blank');
   }, 2600);
 }
 
