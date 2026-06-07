@@ -148,6 +148,8 @@
       line-height: 1;
       margin-bottom: 8px;
       color: var(--white);
+      display: inline-block;
+      transition: transform 0.3s ease;
     }
 
     .metric-value.highlight-green {
@@ -160,6 +162,16 @@
       text-shadow: 0 0 20px rgba(245, 166, 35, 0.3);
     }
 
+    /* Pulsing class triggered at the end of count up */
+    .metric-value.pulse-active {
+      animation: numberPulse 0.8s ease-in-out 2;
+    }
+
+    @keyframes numberPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); text-shadow: 0 0 30px rgba(245, 166, 35, 0.6); }
+    }
+
     .metric-desc {
       font-size: 0.95rem;
       color: rgba(255, 255, 255, 0.6);
@@ -170,6 +182,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      position: relative;
     }
 
     .chart-header {
@@ -191,6 +204,44 @@
       position: relative;
       height: 280px;
       width: 100%;
+    }
+
+    /* CHART BAR LABELS OVERLAY */
+    .chart-bar-overlay {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      white-space: nowrap;
+      background: rgba(10, 22, 40, 0.6);
+      padding: 6px 10px;
+      border-radius: 8px;
+      backdrop-filter: blur(2px);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      z-index: 10;
+    }
+
+    /* CITATION BLOCK */
+    .citation-block {
+      margin-top: 32px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .citation-block p {
+      margin-bottom: 8px;
+    }
+    .citation-block p:last-child {
+      margin-bottom: 0;
     }
 
     /* STRATEGY RECOMMENDATIONS */
@@ -328,11 +379,14 @@
         </div>
         <div class="chart-container">
           <canvas id="capacityChart"></canvas>
+          <!-- Absolute HTML labels overlaid inside green bar centers -->
+          <div id="chartLabelLeft" class="chart-bar-overlay">0% selling time</div>
+          <div id="chartLabelRight" class="chart-bar-overlay">0% selling time</div>
         </div>
       </div>
     </div>
 
-    <!-- Recommendations -->
+    <!-- Recommendations & Strategic Plan -->
     <div class="strategy-section animate-fade-in" style="animation-delay: 0.4s;">
       <div class="card strategy-card">
         <h3>Strategic Action Plan for Your <span id="teamSizeText"></span> Reps</h3>
@@ -362,6 +416,12 @@
       </div>
     </div>
 
+    <!-- APA Citation Section -->
+    <div class="citation-block animate-fade-in" style="animation-delay: 0.5s;">
+      <p><strong>Methodology &amp; Assumptions Citation (APA format):</strong></p>
+      <p>Salesforce Research. (2023). <em>State of Sales</em> (5th ed.). Salesforce, Inc. Retrieved from <a href="https://www.salesforce.com/stateofsales/" target="_blank" style="color: var(--gold); text-decoration: underline;">https://www.salesforce.com/stateofsales/</a>. Benchmark calculations assume an industry-standard 40-hour work week, wherein a typical representative reclaims 5 hours of administrative prospecting task load per week by implementing generative AI workflows, translating to $13,000 in reclaimed capacity value per rep annually at a blended rate of $50/hour.</p>
+    </div>
+
     <!-- Call to Action -->
     <div class="cta-container">
       <a href="index.html#book" class="btn-action">Schedule a Discovery Call with Scott</a>
@@ -381,13 +441,13 @@
     const hourlyRate = 50;
 
     const totalHoursReclaimed = reps * hoursPerWeekPerRep * workingWeeks;
-    const capacityValue = reps * 13000; // Aligned with the $13K team multiplier on the main page!
+    const capacityValue = reps * 13000; // Blended multiplier value
 
     // Populate DOM
     document.getElementById('teamSizeText').textContent = reps;
     document.getElementById('reportMetaText').textContent = `Custom ROI Analysis for a team of ${reps} reps${email ? ' (' + email + ')' : ''}.`;
     
-    // Count up animation
+    // Count up animation with pulse at finish
     function animateValue(id, start, end, duration, prefix = '', suffix = '') {
       const obj = document.getElementById(id);
       let startTimestamp = null;
@@ -398,64 +458,144 @@
         obj.textContent = prefix + val.toLocaleString() + suffix;
         if (progress < 1) {
           window.requestAnimationFrame(step);
+        } else {
+          obj.textContent = prefix + end.toLocaleString() + suffix;
+          obj.classList.add('pulse-active');
         }
       };
       window.requestAnimationFrame(step);
     }
 
-    animateValue('reclaimedHoursVal', 0, totalHoursReclaimed, 1500, '', ' hrs');
-    animateValue('reclaimedValueVal', 0, capacityValue, 1500, '$', '');
+    // Numbers count up over 3 seconds
+    animateValue('reclaimedHoursVal', 0, totalHoursReclaimed, 3000, '', ' hrs');
+    animateValue('reclaimedValueVal', 0, capacityValue, 3000, '$', '');
 
     // Setup Chart
+    let capacityChart;
     const ctx = document.getElementById('capacityChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Before AI Playbook', 'With AI Playbook'],
-        datasets: [
-          {
-            label: 'Prospecting Admin (hrs/week)',
-            data: [hoursPerWeekPerRep * reps, 0.5 * reps],
-            backgroundColor: 'rgba(245, 166, 35, 0.8)',
-            borderColor: 'var(--gold)',
-            borderWidth: 1.5,
-            borderRadius: 8
+    
+    // Delay chart draw until count up finishes (at 3000ms)
+    setTimeout(() => {
+      capacityChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Before AI Playbook', 'With AI Playbook'],
+          datasets: [
+            {
+              label: 'Prospecting Admin (hrs/week)',
+              data: [hoursPerWeekPerRep * reps, 0.5 * reps],
+              backgroundColor: 'rgba(245, 166, 35, 0.8)',
+              borderColor: 'var(--gold)',
+              borderWidth: 1.5,
+              borderRadius: 8
+            },
+            {
+              label: 'Active Selling Time (hrs/week)',
+              data: [15 * reps, (15 + hoursPerWeekPerRep - 0.5) * reps],
+              backgroundColor: 'rgba(0, 208, 132, 0.8)',
+              borderColor: 'var(--babson-green)',
+              borderWidth: 1.5,
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 3000, // Chart animates over 3 seconds
+            onProgress: function() {
+              positionOverlayLabels(this);
+            },
+            onComplete: function() {
+              positionOverlayLabels(this);
+              triggerOverlayLabelAnimation();
+            }
           },
-          {
-            label: 'Active Selling Time (hrs/week)',
-            data: [15 * reps, (15 + hoursPerWeekPerRep - 0.5) * reps],
-            backgroundColor: 'rgba(0, 208, 132, 0.8)',
-            borderColor: 'var(--babson-green)',
-            borderWidth: 1.5,
-            borderRadius: 8
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: 'rgba(255, 255, 255, 0.7)',
-              font: { size: 11, weight: 'bold' }
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: 'rgba(255, 255, 255, 0.7)',
+                font: { size: 11, weight: 'bold' }
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              ticks: { color: 'rgba(255, 255, 255, 0.8)', font: { size: 12, weight: 'bold' } },
+              grid: { display: false }
+            },
+            y: {
+              stacked: true,
+              ticks: { color: 'rgba(255, 255, 255, 0.7)', font: { size: 10 } },
+              grid: { color: 'rgba(255, 255, 255, 0.08)' }
             }
           }
-        },
-        scales: {
-          x: {
-            stacked: true,
-            ticks: { color: 'rgba(255, 255, 255, 0.8)', font: { size: 12, weight: 'bold' } },
-            grid: { display: false }
-          },
-          y: {
-            stacked: true,
-            ticks: { color: 'rgba(255, 255, 255, 0.7)', font: { size: 10 } },
-            grid: { color: 'rgba(255, 255, 255, 0.08)' }
-          }
         }
-      }
+      });
+    }, 3000);
+
+    // Absolute Overlay Position calculations
+    function positionOverlayLabels(chart) {
+      const meta = chart.getDatasetMeta(1); // active selling dataset
+      if (!meta || !meta.data[0] || !meta.data[1]) return;
+      
+      const chartContainer = document.querySelector('.chart-container');
+      const canvasRect = chart.canvas.getBoundingClientRect();
+      const containerRect = chartContainer.getBoundingClientRect();
+      
+      const offsetX = canvasRect.left - containerRect.left;
+      const offsetY = canvasRect.top - containerRect.top;
+      
+      const labelLeft = document.getElementById('chartLabelLeft');
+      const labelRight = document.getElementById('chartLabelRight');
+      
+      const bar0 = meta.data[0];
+      const bar1 = meta.data[1];
+      
+      // Calculate Y coordinate centers of green bars
+      labelLeft.style.left = (offsetX + bar0.x) + 'px';
+      labelLeft.style.top = (offsetY + (bar0.y + bar0.base) / 2) + 'px';
+      
+      labelRight.style.left = (offsetX + bar1.x) + 'px';
+      labelRight.style.top = (offsetY + (bar1.y + bar1.base) / 2) + 'px';
+    }
+
+    // Sequence Overlay Label animations: Left first, then pause 2s, then Right
+    function triggerOverlayLabelAnimation() {
+      // Left bar percentage count up
+      setTimeout(() => {
+        animatePercentage('chartLabelLeft', 0, 63, 1000, 'selling time');
+      }, 200);
+
+      // Pause 2 seconds and count up right bar percentage
+      setTimeout(() => {
+        animatePercentage('chartLabelRight', 0, 95, 1000, 'selling time');
+      }, 3200); // 1000ms duration of left + 2000ms pause = 3200ms total delay
+    }
+
+    function animatePercentage(elementId, start, end, duration, labelText) {
+      const obj = document.getElementById(elementId);
+      obj.style.opacity = '1';
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const val = Math.floor(progress * (end - start) + start);
+        obj.innerHTML = `<span style="font-size: 1.15rem; color: var(--babson-green); font-weight:900;">${val}%</span> ${labelText}`;
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          obj.innerHTML = `<span style="font-size: 1.15rem; color: var(--babson-green); font-weight:900;">${end}%</span> ${labelText}`;
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    window.addEventListener('resize', () => {
+      if (capacityChart) positionOverlayLabels(capacityChart);
     });
   </script>
 </body>
