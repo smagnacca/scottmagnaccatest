@@ -434,6 +434,10 @@
       transform: translateY(0);
     }
     
+    #col-applies-sales, #calc-btn-container {
+      transition: opacity 2s ease, transform 2s ease;
+    }
+    
     .detail-title {
       font-size: 1.3rem;
       font-weight: 700;
@@ -818,7 +822,7 @@
         }
       }, 9500);
 
-      // Step 3: Wait another 10 seconds and fade in "HOW IT APPLIES TO SALES" and the CTA button
+      // Step 3: Wait another 2 seconds and fade in "HOW IT APPLIES TO SALES" and the CTA button
       setTimeout(() => {
         const appliesSales = document.getElementById("col-applies-sales");
         if (appliesSales) {
@@ -828,7 +832,7 @@
         if (calcBtn) {
           calcBtn.classList.add("fade-in");
         }
-      }, 19500);
+      }, 11500);
     });
   </script>
 
