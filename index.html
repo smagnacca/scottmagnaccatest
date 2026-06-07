@@ -4194,17 +4194,34 @@
       var originalText = el.textContent;
       var inlineStyle = el.getAttribute('style') || '';
 
-      // Build char spans — preserve spaces as non-breaking so layout holds
+      // Split the text into words to prevent breaking inside words
+      var words = originalText.split(' ');
       var fragment = document.createDocumentFragment();
-      for (var ci = 0; ci < originalText.length; ci++) {
-        var ch = originalText[ci];
-        var span = document.createElement('span');
-        span.className = 'char-reveal-char';
-        span.textContent = ch === ' ' ? ' ' : ch;
-        // Restore space display width
-        if (ch === ' ') span.style.width = '0.3em';
-        fragment.appendChild(span);
-      }
+
+      words.forEach(function(wordText, wIdx) {
+        var wordSpan = document.createElement('span');
+        wordSpan.style.display = 'inline-block';
+        wordSpan.style.whiteSpace = 'nowrap';
+
+        for (var ci = 0; ci < wordText.length; ci++) {
+          var ch = wordText[ci];
+          var span = document.createElement('span');
+          span.className = 'char-reveal-char';
+          span.textContent = ch;
+          wordSpan.appendChild(span);
+        }
+
+        fragment.appendChild(wordSpan);
+
+        // Append a space span after each word except the last one
+        if (wIdx < words.length - 1) {
+          var spaceSpan = document.createElement('span');
+          spaceSpan.className = 'char-reveal-char';
+          spaceSpan.textContent = ' ';
+          spaceSpan.style.width = '0.3em';
+          fragment.appendChild(spaceSpan);
+        }
+      });
 
       // Add underline element
       var underline = document.createElement('span');
