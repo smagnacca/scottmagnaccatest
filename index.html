@@ -2760,7 +2760,7 @@
         </h1>
         <!-- Effect 2: typewriter subhead — JS populates #typewriter-output -->
         <p class="hero-subhead" id="hero-subhead">
-          <span id="typewriter-output"></span><span class="tw-cursor" id="tw-cursor"></span>
+          Most teams are running a 2015 playbook in 2026. <strong style="color: #007AFF; font-weight: 700;">Close the gap.</strong> The winning move isn't 'smarter prompts'—it's using AI to hyper-personalize outreach and build trust. Teams doing this see 3x faster pipelines and win rates that move in days, not quarters. Your team will <span id="typewriter-output" style="color: #007AFF; font-weight: 700;"></span><span class="tw-cursor" id="tw-cursor"></span>
         </p>
         <!-- VALUE PROP PARAGRAPH WITH ANIMATIONS -->
         <div class="value-prop-paragraph">
@@ -2925,7 +2925,7 @@
 <section id="problem">
   <div class="container">
     <div class="section-label reveal">The Challenge</div>
-    <h2 class="section-title reveal">The Modern Skills Gap</h2>
+    <h2 class="section-title reveal">The Legacy Sales Playbook is Broken</h2>
     <p class="section-subtitle reveal">Top performers have pulled ahead — and the gap is widening every quarter.</p>
     <div class="comparison-grid reveal-children">
       <div class="compare-col bad compare-old">
@@ -3015,7 +3015,7 @@
 <section id="framework">
   <div class="container">
     <div class="section-label reveal">The Methodology</div>
-    <h2 class="section-title reveal">The Framework Behind the Results</h2>
+    <h2 class="section-title reveal">The 3Cs Framework: How Elite Teams Outsell the Market</h2>
     <p class="section-subtitle reveal">Three principles that transform how teams think, communicate, and adapt — with AI as the accelerator.</p>
     <div class="framework-intro reveal" style="max-width: 720px; margin: 32px auto 48px; text-align: center; font-size: 1.05rem; line-height: 1.75; color: rgba(255,255,255,0.8);">
       <p><span id="methodology-tw-wrap" style="font-weight:700; transition: color 0.6s ease;"><span id="methodology-tw-out"></span><span id="methodology-cursor" style="animation: cursorBlink 0.9s step-end infinite;">|</span></span> You craft a narrative that resonates with your audience's hopes, fears, and ambitions. Then you take action, telling that story so compellingly that others believe, invest, and follow. For professionals, this isn't optional—it's the engine that turns vision into momentum.</p>
@@ -3327,7 +3327,7 @@
 <section id="formats">
   <div class="container">
     <div class="section-label reveal">Training Options</div>
-    <h2 class="section-title reveal">Training Formats</h2>
+    <h2 class="section-title reveal">High-Impact Training Formats</h2>
     <p class="section-subtitle reveal">Every format is designed for immediate application — not death-by-PowerPoint. Attendees leave with tools they can use that week.</p>
     <div class="formats-grid reveal-children">
       <div class="format-card">
@@ -3908,66 +3908,58 @@
      Key phrases appear bold + bright blue; rest stays white.
   ───────────────────────────────────────────────────────────── */
   (function() {
-    var segments = [
-      { text: "Most teams are running a 2015 playbook in 2026. ", styled: false },
-      { text: "Close the gap.", styled: true },
-      { text: " ", styled: false },
-      { text: "The winning move isn't 'smarter prompts'—it's using AI to hyper-personalize outreach and build trust. ", styled: false },
-      { text: "Teams doing this see 3x faster pipelines and win rates", styled: true },
-      { text: " that move in days, not quarters.", styled: false }
+    var phrases = [
+      "win more deals.",
+      "book more meetings.",
+      "outsell the market."
     ];
 
     var output = document.getElementById('typewriter-output');
     var cursor = document.getElementById('tw-cursor');
     if (!output || !cursor) return;
 
-    // Pre-build DOM nodes for each segment (empty until typed into)
-    var segNodes = segments.map(function(seg) {
-      var node = seg.styled ? document.createElement('strong') : document.createElement('span');
-      if (seg.styled) {
-        node.style.color = '#007AFF';
-        node.style.fontWeight = '700';
-      }
-      output.appendChild(node);
-      return node;
-    });
-
     if (prefersReduced) {
-      segments.forEach(function(seg, i) { segNodes[i].textContent = seg.text; });
+      output.textContent = phrases[0];
       cursor.style.display = 'none';
+      window.typewriterComplete = true;
       return;
     }
 
-    var segIdx = 0;
+    var phraseIdx = 0;
     var charIdx = 0;
-    var charDelay = 25; // ms per character — fast reading speed
+    var isDeleting = false;
 
-    function type() {
-      if (segIdx >= segments.length) {
-        setTimeout(function() {
-          cursor.style.animation = 'none';
-          cursor.style.opacity = '0';
-          // Signal that typewriter is complete
-          window.typewriterComplete = true;
-        }, 1500);
-        return;
-      }
-      var seg = segments[segIdx];
-      var node = segNodes[segIdx];
-      if (charIdx < seg.text.length) {
-        node.textContent += seg.text.charAt(charIdx);
-        charIdx++;
-        setTimeout(type, charDelay);
+    function tick() {
+      var currentPhrase = phrases[phraseIdx];
+      
+      if (isDeleting) {
+        output.textContent = currentPhrase.substring(0, charIdx - 1);
+        charIdx--;
       } else {
-        node.textContent = seg.text; // Ensure full text is set instantly on finish
-        segIdx++;
-        charIdx = 0;
-        type(); // advance to next segment immediately
+        output.textContent = currentPhrase.substring(0, charIdx + 1);
+        charIdx++;
       }
+
+      var nextDelay = isDeleting ? 30 : 60;
+
+      if (!isDeleting && charIdx === currentPhrase.length) {
+        // Signal typewriter complete on the first phrase so GSAP triggers
+        if (phraseIdx === 0) {
+          window.typewriterComplete = true;
+        }
+        nextDelay = 2000; // Pause at the end
+        isDeleting = true;
+      } else if (isDeleting && charIdx === 0) {
+        isDeleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        nextDelay = 500; // Pause before typing next phrase
+      }
+
+      setTimeout(tick, nextDelay);
     }
 
     // Start after headline animation is completed: ~1.5s
-    setTimeout(type, 1500);
+    setTimeout(tick, 1500);
   })();
 
   /* ─────────────────────────────────────────────────────────────
