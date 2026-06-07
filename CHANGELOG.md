@@ -2,6 +2,14 @@
 
 ---
 
+## 2026-06-06 — Header Word-Break Wrapping Fix (commit `8705303`)
+
+**What changed:**
+- **Fixed word-wrapping issues on animated titles**: Updated the `setupCharReveal` function in `index.html` (which controls `#proof-title` and `#book-title`).
+- **Word grouping**: Characters within each word are now grouped inside a parent wrapper (`display: inline-block; white-space: nowrap;`). This prevents the browser from splitting a word across lines (e.g., breaking "Organizations" into "Organizati" and "ons") on narrower screens.
+
+---
+
 ## 2026-06-03 — Babson Course + Harvard Verified Credential Badges (commits `1e5c292`, `f091583`, `186e501`, `bcb7bdc`, `9a6d5e2`)
 
 **What changed:**
